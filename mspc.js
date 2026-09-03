@@ -62,7 +62,8 @@ const scripts = [
   { name: 'Apartment Income', fn: runApartment, alwaysRun: true },
 /*  { name: 'Gifts Flashback', fn: runGifts, alwaysRun: false }, */
   { name: 'Teleport Activation', fn: runTeleport, alwaysRun: true },
-  { name: 'Furniture Script', fn: runFurnitureScript, alwaysRun: true },
+  { name: 'Furniture Script1', fn: runFurnitureScript, alwaysRun: true },
+  { name: 'Furniture Script2', fn: runFurnitureScript, alwaysRun: true },
   { name: 'Raise stats', fn: runDuelFP, alwaysRun: true },
 
 ];
