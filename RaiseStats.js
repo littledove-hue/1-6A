@@ -1,21 +1,18 @@
-// duel-fp.js
+// raise-stats.js
 //
 // Steps performed by this script:
 //
 // 1. Open the Duels page.
-// 2. Send buyFashionPoints ONCE (no dollar-based decision anymore).
-// 3. Send getStatistics and read the base/practice numbers for
+// 2. Send getStatistics and read the base/practice numbers for
 //    Elegance (style), Creativity (creativity), Confidence (devotion),
 //    and Grace (beauty). Kindness and Loyalty are ignored.
-// 4. Case 1: if ANY of those 4 numbers is < 200 -> STOP. Nothing else
+// 3. Case 1: if ANY of those 4 numbers is < 200 -> STOP. Nothing else
 //    is sent.
-// 5. Case 2: if ALL 4 numbers are >= 200 -> pick the stat with the
+//    Case 2: if ALL 4 numbers are >= 200 -> pick the stat with the
 //    LOWEST base/practice number (random tie-break if there's a tie),
-//    then send trainStats for that stat 5 times in a row.
+//    then send trainStats for that stat.
 //
 // Important:
-// - buyFashionPoints always uses fpToBuy=2201.
-// - buyFashionPoints goes to /ajax/train.php.
 // - getStatistics goes to /ajax/main.php.
 // - trainStats goes to /ajax/train.php, amount is always 2000.
 // - Playwright's existing logged-in browser session is used.
@@ -87,7 +84,7 @@ function extractBaseStatValues(statsHtml) {
 // Main function
 // ------------------------------------------------------------
 
-module.exports = async function runDuelFP(page) {
+module.exports = async function runRaiseStats(page) {
 
   console.log('');
   console.log('────────────────────────────────────────────────────────────────────────────────');
@@ -115,93 +112,11 @@ module.exports = async function runDuelFP(page) {
 
   // ============================================================
   // STEP 2
-  // Send buyFashionPoints ONCE (unconditionally)
-  // ============================================================
-
-  console.log('');
-  console.log('💳 Step 2: Sending buyFashionPoints request...');
-  console.log('📦 type=buyFashionPoints');
-  console.log('📦 fpToBuy=2201');
-  console.log('🔄 Sending request ONCE...');
-
-  try {
-
-    const response = await page.request.post(
-      TRAIN_URL,
-      {
-        form: {
-          type: 'buyFashionPoints',
-          fpToBuy: '2201'
-        },
-        headers: {
-          'X-Requested-With': 'XMLHttpRequest'
-        }
-      }
-    );
-
-    const responseText = await response.text();
-
-    console.log(
-      `📡 buyFashionPoints HTTP status: ${response.status()}`
-    );
-
-    console.log(
-      `📨 buyFashionPoints response: ${responseText}`
-    );
-
-    if (!response.ok()) {
-
-      throw new Error(
-        `buyFashionPoints request returned HTTP ${response.status()}`
-      );
-
-    }
-
-    try {
-
-      const data = JSON.parse(responseText);
-
-      if (data.status === 1) {
-
-        console.log(
-          '✅ buyFashionPoints request succeeded.'
-        );
-
-      } else {
-
-        console.log(
-          `⚠️ buyFashionPoints returned status: ${data.status}`
-        );
-
-      }
-
-    } catch {
-
-      console.log(
-        '⚠️ Could not parse buyFashionPoints response as JSON.'
-      );
-
-    }
-
-  } catch (error) {
-
-    console.log(
-      `❌ buyFashionPoints request failed: ${error.message}`
-    );
-
-    // Stop here because the rest of the flow depends on the
-    // conversion having actually happened.
-    throw error;
-  }
-
-
-  // ============================================================
-  // STEP 3
   // Send getStatistics and read the base/practice numbers
   // ============================================================
 
   console.log('');
-  console.log('📊 Step 3: Sending getStatistics request...');
+  console.log('📊 Step 2: Sending getStatistics request...');
   console.log('📦 type=getStatistics');
 
   let statValues = {};
@@ -274,12 +189,12 @@ module.exports = async function runDuelFP(page) {
 
 
   // ============================================================
-  // STEP 4
+  // STEP 3
   // Decide: Case 1 (stop) vs Case 2 (train weakest stat)
   // ============================================================
 
   console.log('');
-  console.log('🧮 Step 4: Evaluating stats...');
+  console.log('🧮 Step 3: Evaluating stats...');
 
   // If any of the 4 tracked values is missing or NaN, treat that
   // as "could not confirm >= 200" and stop, same as Case 1.
@@ -368,13 +283,13 @@ module.exports = async function runDuelFP(page) {
 
 
   // ============================================================
-  // STEP 5
-  // Send trainStats for the chosen stat, 5 times in a row
+  // STEP 4
+  // Send trainStats for the chosen stat
   // ============================================================
 
   console.log('');
   console.log(
-    `🏋️ Step 5: Sending trainStats for ${STAT_LABELS[chosenKey]} (${chosenKey}) x5...`
+    `🏋️ Step 4: Sending trainStats for ${STAT_LABELS[chosenKey]} (${chosenKey}) x5...`
   );
 
   for (let i = 1; i <= 1; i++) {
