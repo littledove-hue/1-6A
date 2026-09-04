@@ -1,77 +1,15 @@
 // ================================================================
-// 🏠 APARTMENT INCOME + 🎁 GIFTS FLASHBACK EVENT
-// ================================================================
-//
-// Logic unchanged.
-// Console output reduced to only important information.
+// 🎁 GIFTS FLASHBACK EVENT
 // ================================================================
 
-
-module.exports = async function runApartmentAndGifts(page) {
-
-  // ============================================================== 
-  // STEP 1 + STEP 2
-  // 🏠 APARTMENT INCOME
-  // ==============================================================
-
-  await page.goto(
-    'https://v3.g.ladypopular.com/apartment.php',
-    {
-      waitUntil: 'domcontentloaded',
-      timeout: 60000
-    }
-  );
-
-
-  try {
-
-    const apartmentResponse = await page.evaluate(async () => {
-
-      const response = await fetch(
-        'https://v3.g.ladypopular.com/ajax/apartment.php?type=collectApartmentRent',
-        {
-          method: 'GET',
-          credentials: 'same-origin',
-          headers: {
-            'X-Requested-With': 'XMLHttpRequest'
-          }
-        }
-      );
-
-      return await response.json();
-
-    });
-
-
-    if (apartmentResponse && apartmentResponse.status === 1) {
-
-      console.log('💰 Apartment income collected.');
-
-    } else {
-
-      console.log(
-        `⚠️ Apartment collection returned status=${apartmentResponse?.status}`
-      );
-
-    }
-
-  } catch (error) {
-
-    console.log(`❌ Apartment income failed: ${error.message}`);
-
-    throw error;
-
-  }
-} // remove this if u also want gifts auto activation
-
+module.exports = async function runGifts(page) {
 
   // ============================================================== 
-  // STEP 3 + STEP 4
-  // 🎁 OPEN GUILD PAGE
+  // OPEN GUILD PAGE
   // CHECK WHETHER A FLASHBACK EVENT IS ALREADY ACTIVE
   // ==============================================================
 
- /* try {
+  try {
 
     await page.goto(
       'https://v3.g.ladypopular.com/guild.php',
@@ -117,8 +55,7 @@ module.exports = async function runApartmentAndGifts(page) {
 
 
   // ============================================================== 
-  // STEP 5
-  // 🎁 GET GIFTS FLASHBACK EVENTS
+  // GET GIFTS FLASHBACK EVENTS
   // ==============================================================
 
   let eventsResponse;
@@ -271,8 +208,7 @@ module.exports = async function runApartmentAndGifts(page) {
 
 
   // ============================================================== 
-  // STEP 6
-  // 🎯 RANDOMLY CHOOSE ONE UNLOCKED EVENT
+  // RANDOMLY CHOOSE ONE UNLOCKED EVENT
   // ==============================================================
 
   const randomIndex = Math.floor(
@@ -289,7 +225,7 @@ module.exports = async function runApartmentAndGifts(page) {
 
 
   // ============================================================== 
-  // STEP 6 - ACTIVATE EVENT
+  // ACTIVATE EVENT
   // ==============================================================
 
   let activationResponse;
@@ -350,9 +286,4 @@ module.exports = async function runApartmentAndGifts(page) {
 
   }
 
-
-  // ============================================================== 
-  // FINISHED
-  // ==============================================================
-
-}; */
+};
